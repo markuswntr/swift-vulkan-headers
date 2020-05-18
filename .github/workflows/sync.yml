@@ -1,0 +1,24 @@
+# https://stackoverflow.com/questions/23793062/can-forks-be-synced-automatically-in-github
+
+name: Merge upstream changes
+on:
+  schedule:
+    - cron:  '*/15 * * * *'
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge upstream
+        run: |
+          git config --global user.name 'Markus Winter'
+          git config --global user.email 'markuswntr@users.noreply.github.com'
+
+          git checkout master
+          git pull --unshallow
+
+          git remote add upstream https://github.com/KhronosGroup/Vulkan-Headers.git
+          git fetch upstream
+
+          git merge --no-edit upstream/master
+          git push origin master
